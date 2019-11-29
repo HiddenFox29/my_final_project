@@ -1,0 +1,31 @@
+
+
+a {
+    text-decoration: #000102;
+}
+
+a:hover {
+    color: rgb(233, 202, 25);
+    text-decoration: none;
+}
+
+#nav_vault {
+    color:chocolate;
+
+}
+
+.btn-outline-success {
+    color: #f1f1f1;
+    border-color: chocolate;
+    margin-right: 3px;
+}
+
+.btn-outline-success:hover {
+    background: rgb(214, 144, 12);
+}
+
+#btn_form{
+    background: #343a40;
+    color: chocolate;
+    border-color: chocolate;
+}
