@@ -11,6 +11,7 @@ a:hover {
 
 #nav_vault {
     color:chocolate;
+    cursor: pointer;
 
 }
 
@@ -159,6 +160,13 @@ footer.light .footer-copyright {
     color: #4b92dc;
 }
 
+.login:hover {
+    color: #4b92dc;
+}
+
+.logout:hover {
+    color: #4b92dc;
+}
 .widget-title {
     margin-bottom: 20px;
 }
@@ -250,4 +258,35 @@ ul.social-footer2 li a {
     -o-transition: all 250ms ease-in-out 0s;
     transition: all 250ms ease-in-out 0s;
 
+}
+
+dialog {
+    width: 370px;
+    border-color: #0878e9;
+    border-radius: 10px;
+}
+.dialog_login {
+    margin-bottom: 20px !important;
+    width: 90%;
+}
+.inp_login {
+    width: 100% !important;
+}
+
+.btn_dialog_close {
+    background-color: firebrick;
+}
+
+
+.dialog_reg {
+    margin-bottom: 20px !important;
+    width: 90%;
+}
+
+.inp_reg {
+    width: 100% !important;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
 }
