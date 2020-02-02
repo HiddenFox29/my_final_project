@@ -21,8 +21,8 @@
         <a id="nav_vault" class="navbar-brand">VaultOverflow<img src="iconcubeorange-17061/favicon.ico"
                 alt="logo Vault Overflow" id="img_logo"></a>
         <form class="form-inline">
-            <input class="form-control mr-sm-2" type="search" placeholder="" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input id="inpt_search" class="form-control mr-sm-2" type="search" required>
+            <button id="btn_search" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             <a id="reg" href="#" title="Registration">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 172 172"
                     style=" fill:#000000;">
@@ -89,10 +89,10 @@
             <dialog id="dialog_login">
                 <form>
                     <div class="form-group dialog_login">
-                        <input type="text" class="form-control inp_login" name="email" id="login_email" placeholder="Enter email">
+                        <input type="text" class="form-control inp_login"  id="login_email" placeholder="Enter email">
                     </div>
                     <div class="form-group dialog_login">
-                        <input type="password" class="form-control inp_login" name="password" id="login_psw" placeholder="Enter password">
+                        <input type="password" class="form-control inp_login"  id="login_psw" placeholder="Enter password">
                     </div>
                 </form>
                 <input id="btn_form_login" class="btn dialog btn-primary" type="submit" value="Submit">
@@ -102,13 +102,13 @@
             <dialog id="dialog_reg" >
                 <form>
                     <div class="form-group dialog_reg">
-                        <input type="email" maxlength="50" class="form-control inp_reg" name="email" id="email_input" placeholder="Enter email">
+                        <input type="text" maxlength="50" class="form-control inp_reg"  id="email_input" placeholder="Enter email">
                     </div>
                     <div class="form-group dialog_reg">
-                        <input type="password" minlength="8" class="form-control inp_reg" name="password" id="password" placeholder="Enter password">
+                        <input type="password" minlength="8" class="form-control inp_reg"  id="password" placeholder="Enter password">
                     </div>
                     <div class="form-group dialog_reg">
-                        <input type="password" minlength="8" class="form-control inp_reg" name="password" id="password_again" placeholder="Enter password again">
+                        <input type="password" minlength="8" class="form-control inp_reg"  id="password_again" placeholder="Enter password again">
                     </div>
                 </form>
                 <input id="btn_form_register" class="btn dialog btn-primary" type="submit" value="Submit">
@@ -138,6 +138,7 @@
     <div id="question_list"></div>
     <div id="question"></div>
     <div id="answer"></div>
+    <div id="div_search"></div>
 
     <form id='form_for_answer' class="m-5">
 
