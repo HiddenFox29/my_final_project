@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-// localStorage.clear();
+tryLogin();
+
 let chooseQuest = document.getElementById("container-${$(this)}");
-// chooseQuest = document.getElementById('contaner')
 let question_list = document.getElementById('question_list');
 let question = document.getElementById('question');
 let form = document.getElementById('form_for_question');
 let answer = document.getElementById('answer');
 let form_answer = document.getElementById('form_for_answer');
-let divSearch = document.getElementById('div_search')
+let divSearch = document.getElementById('div_search');
+
 renderHomePage();
 // =========================================================================================
 // отображение вопросов на главной странице
@@ -29,7 +30,7 @@ function renderHomePage () {
     req.then((response) => {
         jsonResponse = response.json();
         jsonResponse.then((data) => {
-            // console.log(data)
+            console.log(data);
 
             questionList.innerHTML = '';
             for (let i = 0; i < data.length; i++) {
@@ -70,13 +71,14 @@ document.getElementById('btn_form').onclick =  function(event){
 //========================================================================================
     // запрос к серверу для получения объекта с вопросами и добавления новых в объект
 
-         fetch('http://localhost:1337/question', {
+        fetch('http://localhost:1337/question', {
         method: "POST",
-
+        credentials: "include",
         body: JSON.stringify({
             title: createTitle,
             description: createDescription,
             tag: createTag,
+
         })
 
     }).then(res => {
@@ -90,10 +92,15 @@ document.getElementById('btn_form').onclick =  function(event){
 // =========================================================================================
 // переход по ссылки на вопрос и отображение ответов
 const updateOnClick = function() {
+    let reiting = 0;
     const elements = document.getElementsByClassName('question-container');
     for (let i in elements) {
         elements[i].onclick = (event) => {
-        event.preventDefault()
+            if(elements[i].onclick){
+                reiting += 1
+            }
+        console.log('reiting:', reiting)
+        event.preventDefault();
         // debugger
         const questionId = event.target.parentElement.parentElement.parentElement.id; // получаем id вопроса
 // ============================================================================================
@@ -117,7 +124,7 @@ const updateOnClick = function() {
         request.then((response) => {
             jsonResponse = response.json();
             jsonResponse.then((data_question) => {
-                console.log('this is', data_question)
+                // console.log('this is', data_question);
 //=============================================================================================
                 // отображение выбраного вопроса
                 question.innerHTML = `<div id="${data_question.id}" class="card m-5 question-container">
@@ -126,9 +133,13 @@ const updateOnClick = function() {
                                             <a id="link_question" href="#" >
                                                 <p class="card-text">${data_question.description}</p>
                                             </a>
-                                            <span>${data_question.tag}</span>
+
+                                            <span>Tag# ${data_question.tag}</span><br>
+                                            <button id = "ch" class = "btn btn_dialog_close" >Change</button>
                                         </div>
                                     </div>`
+// ============================================================================================
+                        changeQuestion(data_question)
 //=============================================================================================
                 // отрисовка всех пренадлежащих ответов
                 for (let i = 0; i < data_question.answers.length; i++) {
@@ -143,9 +154,11 @@ const updateOnClick = function() {
                                 </div>
                         </div>`);
                     }
+
             });
         });
 // ===========================================================================================
+
         // форма отправки ответов на сервер
         document.getElementById('btn_form_answer').onclick = (event) => {
             event.preventDefault();
@@ -154,16 +167,20 @@ const updateOnClick = function() {
 
             fetch('http://localhost:1337/answer', {
                 method: "POST",
-
+                credentials: "include",
                 body: JSON.stringify({
                     text: createAnswer,
-                    question: questionId
-                })
+                    question: questionId,
+
+                }),
 
             }).then(res => {
+
                 res.json().then(data => console.log(data));
+
                 updateOnClick();
                 createAnswer = '';
+
             });
         };
 
@@ -191,7 +208,7 @@ document.getElementById('reg').onclick = (event) => {
         let psw_again = document.getElementById('password_again').value;
         if (psw !== psw_again) {
             alert('Ваши пароли не совподают')
-            return
+            return;
         }
 // ===============================================================================================
 
@@ -205,14 +222,14 @@ document.getElementById('reg').onclick = (event) => {
                             password: psw
                         });
                 dialog.close();
-                changeLogoIn()
-                alert('Добро пожаловать ' + user)
+                changeLogoIn();
+                alert('Добро пожаловать ' + user);
 
         } catch(err){
-            alert('Что-то пошло не так')
-            console.error(err.message)
-            return
-        }
+            alert('Что-то пошло не так');
+            console.error(err.message);
+            return;
+        };
 
     }
 }
@@ -235,17 +252,20 @@ document.getElementById('log_in').onclick = (event) => {
         try{
             await request("http://localhost:1337/user/login", "POST", {
                 username: user,
-                password: psw
+                password: psw,
 
             });
+                user.innerHTML = '';
+                psw.innerHTML = '';
                 dialog.close();
-                changeLogoIn()
+                changeLogoIn();
+
                 alert('Добро пожаловать ' + user)
         }catch(err){
             alert('Неверное имя пользователя или пароль')
             console.error(err.message)
 
-        }
+        };
 
     }
 
@@ -253,14 +273,11 @@ document.getElementById('log_in').onclick = (event) => {
 //===============================================================================================
 // выход пользователя из своего акаунта
 document.getElementById('log_out').onclick = async () => {
-        try {
-            await request("http://localhost:1337/user/logout", "POST",{});
-            changeLogoOut()
-            alert('До новых встречь ' + email)
-        } catch (err) {
-            alert('Выход не удался, попробуйте еще раз!')
-            console.error(err.message)
-        }
+    changeLogoOut();
+    alert('До новых встречь');
+    renderHomePage();
+    await request("http://localhost:1337/user/logout", "POST",{});
+
 }
 
 
@@ -289,10 +306,12 @@ async function request(path = "", method = "GET", data = {
 
     }) {
     let options = {
-        method
+        method,
+        credentials:"include" // fetch имеет особый параметр для обектов , для отсылки ключа
     };
 
     if (method === "POST") options.body = JSON.stringify(data);
+    if (method === "PUT") options.body = JSON.stringify(data);
 
     let result = await fetch(path, options);
 
@@ -333,7 +352,7 @@ document.getElementById('btn_search').onclick = async(event) => {
                                             <a id="link_question" href="#" >
                                                 <p class="card-text">${description_i}</p>
                                             </a>
-                                            <span>${tag_i}</span>
+                                            <span>Tag# ${tag_i}</span>
                                         </div>
                                     </div>`);
         }
@@ -341,46 +360,80 @@ document.getElementById('btn_search').onclick = async(event) => {
 
 
     }catch(err){
-        console.error('Поиск не найден')
+        console.error('Поиск не найден');
     }
 
 }
 // ===============================================================================================
+// функция проверки авторизации после перезагрузки
+async function tryLogin() {
+    try {
+        await request('http://localhost:1337/user/me', 'GET');
+        changeLogoIn();
+    } catch(err){
+        console.error(err.message)
+    }
+};
+
+//=============================================================================================
+//редактироание вопросов
+async function changeQuestion(dataQuest){
+    // проверка наличия прав для изменения вопроса
+    let user = await request("http://localhost:1337/user/me", 'GET')
+    console.log('This is check', user.id, dataQuest.user.id)
+    if (dataQuest.user.id !== user.id) {
+        document.getElementById('ch').hidden = true;
+        return
+    } else{
+    document.getElementById('ch').onclick = async(event) => {
+        let descript = '';
+        let title = '';
+        let id = '';
+        let textArea = document.getElementById('desc_ch_input');
+        let inputTitle = document.getElementById('ch_title');
+//================================================================================================
+        // модальное окно редактирования вопросов
+        event.preventDefault();
+        let dialog = document.getElementById('change_question');
+        dialog.showModal();
+
+        document.getElementById('close_ch').onclick = function () {
+            dialog.close();
+        };
+//=======================================================================================================
+        try {
+            descript = dataQuest.description;
+            title = dataQuest.title;
+            id = dataQuest.id
+
+            console.log('id: ', id)
+
+            inputTitle.innerHTML = title;
+            console.log('title: ', title);
+
+            textArea.innerHTML = descript;
+            console.log('discript: ',descript);
 
 
+    // =======================================================================================================
+            document.getElementById('btn_form_ch').onclick = async() => {
+                let chanDescript = document.getElementById('desc_ch_input').value;
+                let chanTitle = document.getElementById('ch_title').value;
+                console.log('100', chanDescript)
 
+                    await request('http://localhost:1337/question/'+ id, 'PUT',{
+                        title: chanTitle,
+                        description: chanDescript,
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    })
+                    dialog.close();
+                }
+            } catch(err){
+                console.error(err.message)
+            }
+        };
+    };
+    };
+//======================================================================================================================
 
 });
